@@ -1,0 +1,34 @@
+name: Deploy to AWS S3
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: NodeJs Setup
+        uses: actions/setup-node@v1
+        with:
+          node-version:
+
+      - name: Dependency Installation
+        run: npm install
+
+      - name: App Build
+        run: npm run build
+
+      - name: Configure AWS Credentials
+        uses: was-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id:
+          aws-secret-access-key:
+          aws-rigion: eu-north-1
+
+      - name: Deploy to AWS S3
+        run: aws s3 sync build s3://sibat-dev--eun1-az1--x-s3 --delete
